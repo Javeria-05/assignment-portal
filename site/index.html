@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment Submission Portal (Demo)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Assignment Submission Portal</h1>
+      <p>Static demo &mdash; submissions are kept in the browser only.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>New Submission</h2>
+      <div id="alert"></div>
+      <form id="f" novalidate>
+        <div class="grid">
+          <div><label>Full Name</label><input id="n" placeholder="e.g. Ali Khan"></div>
+          <div><label>Registration Number</label><input id="r" placeholder="e.g. FA23-BSE-042"></div>
+          <div class="full"><label>Assignment Title</label><input id="t" placeholder="e.g. DevOps Lab Assignment 2"></div>
+          <div class="full"><label>Submission URL</label><input id="u" placeholder="https://github.com/username/repo"></div>
+          <div class="full"><button type="submit">Submit Assignment</button></div>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Saved Submissions <span class="badge" id="count">0</span></h2>
+      <div id="empty" class="empty">No submissions yet.</div>
+      <div class="table-wrap" id="tw" style="display:none">
+        <table>
+          <thead><tr><th>Name</th><th>Reg No</th><th>Title</th><th>URL</th><th>Time</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <footer>CSC418 DevOps &middot; Lab Midterm</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const items = [];
+
+function showAlert(cls, msgs) {
+  const box = $("alert");
+  box.innerHTML = "";
+  const d = document.createElement("div");
+  d.className = "alert " + cls;
+  if (cls === "ok") {
+    d.textContent = msgs[0];
+  } else {
+    const ul = document.createElement("ul");
+    msgs.forEach(m => { const li = document.createElement("li"); li.textContent = m; ul.appendChild(li); });
+    d.appendChild(ul);
+  }
+  box.appendChild(d);
+}
+
+function validUrl(u) {
+  try {
+    const p = new URL(u);
+    return (p.protocol === "http:" || p.protocol === "https:") && !/\s/.test(u);
+  } catch (e) { return false; }
+}
+
+function render() {
+  $("count").textContent = items.length;
+  $("empty").style.display = items.length ? "none" : "block";
+  $("tw").style.display = items.length ? "block" : "none";
+  const tbody = $("rows");
+  tbody.innerHTML = "";
+  items.forEach(s => {
+    const tr = document.createElement("tr");
+    [s.name, s.reg, s.title].forEach(v => {
+      const td = document.createElement("td"); td.textContent = v; tr.appendChild(td);
+    });
+    const tdu = document.createElement("td");
+    const a = document.createElement("a");
+    a.className = "url"; a.href = s.url; a.textContent = s.url;
+    a.target = "_blank"; a.rel = "noopener";
+    tdu.appendChild(a); tr.appendChild(tdu);
+    const tdt = document.createElement("td"); tdt.textContent = s.time; tr.appendChild(tdt);
+    tbody.appendChild(tr);
+  });
+}
+
+$("f").addEventListener("submit", e => {
+  e.preventDefault();
+  const v = id => $(id).value.trim();
+  const errors = [];
+  if (!v("n")) errors.push("Name is required");
+  if (!v("r")) errors.push("Registration number is required");
+  if (!v("t")) errors.push("Assignment title is required");
+  if (!v("u")) errors.push("Submission URL is required");
+  else if (!validUrl(v("u"))) errors.push("Invalid submission URL");
+  if (errors.length) { showAlert("err", errors); return; }
+  items.push({ name: v("n"), reg: v("r"), title: v("t"), url: v("u"),
+               time: new Date().toLocaleString() });
+  showAlert("ok", ["Submission saved successfully"]);
+  $("f").reset();
+  render();
+});
+</script>
+</body>
+</html>

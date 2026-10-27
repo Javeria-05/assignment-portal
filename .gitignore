@@ -1,0 +1,8 @@
+__pycache__/
+.pytest_cache/
+submissions.json
+report.xml
+report.json
+summary.txt
+test-report.json
+venv/

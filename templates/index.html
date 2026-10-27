@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment Submission Portal</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Assignment Submission Portal</h1>
+      <p>Submit your assignment link and track all saved submissions.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>New Submission</h2>
+
+      {% if message %}
+        <div class="alert ok">{{ message }}</div>
+      {% endif %}
+      {% if errors %}
+        <div class="alert err">
+          <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+        </div>
+      {% endif %}
+
+      <form method="post">
+        <div class="grid">
+          <div>
+            <label for="name">Full Name</label>
+            <input id="name" name="name" placeholder="e.g. Javeria Irum" value="{{ form.get('name', '') }}">
+          </div>
+          <div>
+            <label for="reg_no">Registration Number</label>
+            <input id="reg_no" name="reg_no" placeholder="e.g. FA23-BSE-063" value="{{ form.get('reg_no', '') }}">
+          </div>
+          <div class="full">
+            <label for="title">Assignment Title</label>
+            <input id="title" name="title" placeholder="e.g. DevOps Lab Midterm" value="{{ form.get('title', '') }}">
+          </div>
+          <div class="full">
+            <label for="submission_url">Submission URL</label>
+            <input id="submission_url" name="submission_url" placeholder="https://github.com/username/repo" value="{{ form.get('submission_url', '') }}">
+          </div>
+          <div class="full"><button type="submit">Submit Assignment</button></div>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Saved Submissions <span class="badge">{{ submissions|length }}</span></h2>
+      {% if submissions %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Reg No</th><th>Title</th><th>URL</th><th>Time</th></tr>
+          </thead>
+          <tbody>
+            {% for s in submissions %}
+            <tr>
+              <td>{{ s.name }}</td>
+              <td>{{ s.reg_no }}</td>
+              <td>{{ s.title }}</td>
+              <td><a class="url" href="{{ s.submission_url }}" target="_blank" rel="noopener">{{ s.submission_url }}</a></td>
+              <td>{{ s.submitted_at }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <div class="empty">No submissions yet.</div>
+      {% endif %}
+    </section>
+  </main>
+
+  <footer>CSC418 DevOps &middot; Lab Midterm</footer>
+</body>
+</html>
