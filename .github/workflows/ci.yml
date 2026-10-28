@@ -21,6 +21,21 @@ jobs:
         if: always()
         run: python scripts/send_report.py
 
+      - name: Email report
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_TO }}
+          from: CI Bot <${{ secrets.MAIL_USERNAME }}>
+          subject: "CI ${{ job.status }}: ${{ github.repository }} @ ${{ github.sha }}"
+          body: file://summary.txt
+          attachments: report.json
+
   deploy:
     needs: test
     if: github.ref == 'refs/heads/main'
