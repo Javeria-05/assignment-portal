@@ -36,8 +36,8 @@ def create_app(data_file=None):
             errors.append("Name is required")
         if not form.get("reg_no", "").strip():
             errors.append("Registration number is required")
-        if not form.get("title", "").strip():
-            errors.append("Assignment title is required")
+       # if not form.get("title", "").strip():
+         #     errors.append("Assignment title is required")
         url = form.get("submission_url", "").strip()
         if not url:
             errors.append("Submission URL is required")
