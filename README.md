@@ -181,7 +181,7 @@ The workflow in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on *
 | Send report to receiver | `python scripts/send_report.py` with `if: always()`, so it runs for passing and failing runs |
 | Email report | Emails the summary and `report.json` with `if: always()` |
 
-### `deploy` job (GitHub-hosted, bonus)
+### `deploy` job (bonus)
 
 Runs only when the `test` job succeeds (`needs: test`) **and** the branch is `main`. If any test fails, the deploy job is skipped and the previously published page stays unchanged.
 
@@ -280,9 +280,6 @@ Before each demo, start the receiver (`python receiver/receiver.py`) and the run
 |---|---|
 | Run stays **Queued** | The runner is not running. Start it with `./run.cmd` |
 | Run fails at **Send report** | The receiver is not running. Start `python receiver/receiver.py` |
-| `test-report.json` shows `local` values | The report was created by a local run, not by the pipeline |
-| `collected 0 items` in pytest | The test file is empty, not saved, or not named `test_*.py` |
-| `IndentationError` | Python indentation was broken while pasting. Use 4 spaces per level |
 | Email step fails | Check the three secrets and use a Google App Password, not the account password |
 | Pages deploy fails | Set **Settings → Pages → Source** to *GitHub Actions* (the repository must be public on a free plan) |
 
